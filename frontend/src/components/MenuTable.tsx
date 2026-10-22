@@ -92,6 +92,7 @@ export default function MenuTable({ menus, refresh, onEdit }: Props) {
                     <table className="custom-table">
                         <thead>
                         <tr>
+                            <th>Image</th>
                             <th>Name</th>
                             <th>Description</th>
                             <th>Price</th>
@@ -103,6 +104,13 @@ export default function MenuTable({ menus, refresh, onEdit }: Props) {
                         <tbody>
                         {filteredMenus.map((menu) => (
                             <tr key={menu.id}>
+                                <td>
+                                    {menu.imageUrl ? (
+                                        <img src={menu.imageUrl} alt={menu.name} style={{ width: "40px", height: "40px", objectFit: "cover", borderRadius: "6px" }} />
+                                    ) : (
+                                        <span style={{ color: "#9ca3af", fontSize: "12px" }}>No Image</span>
+                                    )}
+                                </td>
                                 <td className="font-semibold">{menu.name}</td>
                                 <td style={{ color: "#6b7280", maxWidth: "250px" }}>
                                     {menu.description || "-"}

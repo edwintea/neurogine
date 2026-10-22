@@ -19,4 +19,5 @@ public class Menu {
     private String description;
     private double price;
     private String category;
+    private String imageUrl;
 }
