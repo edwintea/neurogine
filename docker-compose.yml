@@ -1,0 +1,41 @@
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: neurogine-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - neurogine-net
+
+  backend:
+    build: ./backend
+    container_name: neurogine-backend
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATA_MONGODB_HOST=mongodb
+      - SPRING_DATA_MONGODB_PORT=27017
+      - SPRING_DATA_MONGODB_DATABASE=menu_db
+    depends_on:
+      - mongodb
+    networks:
+      - neurogine-net
+
+  frontend:
+    build: ./frontend
+    container_name: neurogine-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - neurogine-net
+
+volumes:
+  mongo_data:
+
+networks:
+  neurogine-net:
+    driver: bridge

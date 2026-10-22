@@ -1,0 +1,11 @@
+/home/edwin/Documents/interview/Neurogine/backend/src/main/java/com/neurogine/menu/controller/AuthController.java
+/home/edwin/Documents/interview/Neurogine/backend/src/main/java/com/neurogine/menu/repository/UserRepository.java
+/home/edwin/Documents/interview/Neurogine/backend/src/main/java/com/neurogine/menu/model/MenuItem.java
+/home/edwin/Documents/interview/Neurogine/backend/src/main/java/com/neurogine/menu/repository/MenuItemRepository.java
+/home/edwin/Documents/interview/Neurogine/backend/src/main/java/com/neurogine/menu/controller/MenuController.java
+/home/edwin/Documents/interview/Neurogine/backend/src/main/java/com/neurogine/menu/MenuApplication.java
+/home/edwin/Documents/interview/Neurogine/backend/src/main/java/com/neurogine/menu/repository/MenuRepository.java
+/home/edwin/Documents/interview/Neurogine/backend/src/main/java/com/neurogine/menu/model/User.java
+/home/edwin/Documents/interview/Neurogine/backend/src/main/java/com/neurogine/menu/service/MenuService.java
+/home/edwin/Documents/interview/Neurogine/backend/src/main/java/com/neurogine/menu/model/Menu.java
+/home/edwin/Documents/interview/Neurogine/backend/src/main/java/com/neurogine/menu/dto/MenuRequest.java

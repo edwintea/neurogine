@@ -1,0 +1,12 @@
+com/neurogine/menu/service/MenuService.class
+com/neurogine/menu/MenuApplication.class
+com/neurogine/backend/controller/MenuController.class
+com/neurogine/backend/repository/UserRepository.class
+com/neurogine/menu/dto/MenuRequest.class
+com/neurogine/menu/model/Menu$MenuBuilder.class
+com/neurogine/backend/controller/AuthController.class
+com/neurogine/backend/repository/MenuItemRepository.class
+com/neurogine/menu/model/Menu.class
+com/neurogine/menu/repository/MenuRepository.class
+com/neurogine/backend/model/MenuItem.class
+com/neurogine/backend/model/User.class
