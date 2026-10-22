@@ -3,6 +3,7 @@ import MenuForm from "./components/MenuForm";
 import MenuTable from "./components/MenuTable";
 import LoginForm from "./components/LoginForm";
 import RegisterForm from "./components/RegisterForm";
+import ConfirmDialog from "./components/ConfirmDialog";
 
 import { getMenus } from "./api/menuApi";
 import type { Menu } from "./types/menu";
@@ -14,9 +15,11 @@ export default function App() {
     const [authView, setAuthView] = useState<"login" | "register">("login");
     const [menus, setMenus] = useState<Menu[]>([]);
 
-    // UI States for Form visibility and editing
     const [showForm, setShowForm] = useState<boolean>(false);
     const [editingMenu, setEditingMenu] = useState<Menu | null>(null);
+
+    // Logout Confirmation State
+    const [showLogoutDialog, setShowLogoutDialog] = useState<boolean>(false);
 
     useEffect(() => {
         const token = localStorage.getItem("authToken");
@@ -35,24 +38,9 @@ export default function App() {
         }
     };
 
-    const handleLogout = () => {
+    const executeLogout = () => {
         localStorage.removeItem("authToken");
         setIsAuthenticated(false);
-    };
-
-    const handleOpenCreateForm = () => {
-        setEditingMenu(null);
-        setShowForm(true);
-    };
-
-    const handleOpenEditForm = (menu: Menu) => {
-        setEditingMenu(menu);
-        setShowForm(true);
-    };
-
-    const handleCloseForm = () => {
-        setShowForm(false);
-        setEditingMenu(null);
     };
 
     if (!isAuthenticated) {
@@ -80,7 +68,7 @@ export default function App() {
         <div id="center">
             <header style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
                 <h1 style={{ fontSize: "22px", margin: 0 }}>Menu Management System</h1>
-                <button onClick={handleLogout} className="btn-danger-sm">
+                <button onClick={() => setShowLogoutDialog(true)} className="btn-danger-sm">
                     Logout
                 </button>
             </header>
@@ -90,7 +78,7 @@ export default function App() {
                     Total Items: {menus.length}
                 </div>
                 {!showForm && (
-                    <button onClick={handleOpenCreateForm} className="btn-primary">
+                    <button onClick={() => { setEditingMenu(null); setShowForm(true); }} className="btn-primary">
                         + Create New Menu
                     </button>
                 )}
@@ -101,16 +89,28 @@ export default function App() {
                     <MenuForm
                         editingMenu={editingMenu}
                         onSuccess={loadMenus}
-                        onClose={handleCloseForm}
+                        onClose={() => { setShowForm(false); setEditingMenu(null); }}
                     />
                 )}
 
                 <MenuTable
                     menus={menus}
                     refresh={loadMenus}
-                    onEdit={handleOpenEditForm}
+                    onEdit={(menu) => { setEditingMenu(menu); setShowForm(true); }}
                 />
             </main>
+
+            {/* Custom Logout Confirmation Dialog */}
+            <ConfirmDialog
+                isOpen={showLogoutDialog}
+                title="Confirm Logout"
+                message="Are you sure you want to log out of your account?"
+                confirmText="Logout"
+                cancelText="Cancel"
+                isDanger={true}
+                onConfirm={executeLogout}
+                onClose={() => setShowLogoutDialog(false)}
+            />
         </div>
     );
 }

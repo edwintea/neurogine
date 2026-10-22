@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { Menu } from "../types/menu";
 import { deleteMenu } from "../api/menuApi";
+import ConfirmDialog from "./ConfirmDialog";
 
 interface Props {
     menus: Menu[];
@@ -13,20 +14,26 @@ export default function MenuTable({ menus, refresh, onEdit }: Props) {
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("ALL");
 
-    const remove = async (id: string) => {
-        if (!window.confirm("Are you sure you want to delete this menu item?")) {
-            return;
-        }
+    // State for custom confirmation dialog
+    const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
+
+    const remove = (id: string) => {
+        setDeleteTargetId(id);
+    };
+
+    const executeDelete = async () => {
+        if (!deleteTargetId) return;
 
         try {
-            setDeletingId(id);
-            await deleteMenu(id);
+            setDeletingId(deleteTargetId);
+            await deleteMenu(deleteTargetId);
             refresh();
         } catch (error) {
             console.error("Failed to delete menu item:", error);
             alert("Failed to delete the item. Please try again.");
         } finally {
             setDeletingId(null);
+            setDeleteTargetId(null);
         }
     };
 
@@ -119,9 +126,9 @@ export default function MenuTable({ menus, refresh, onEdit }: Props) {
                                     ${Number(menu.price).toFixed(2)}
                                 </td>
                                 <td>
-                    <span className="category-badge">
-                      {menu.category || "General"}
-                    </span>
+                <span className="category-badge">
+                  {menu.category || "General"}
+                </span>
                                 </td>
                                 <td style={{ textAlign: "right", display: "flex", gap: "8px", justifyContent: "flex-end" }}>
                                     <button
@@ -145,6 +152,18 @@ export default function MenuTable({ menus, refresh, onEdit }: Props) {
                     </table>
                 </div>
             )}
+
+            {/* Custom Confirmation Dialog */}
+            <ConfirmDialog
+                isOpen={Boolean(deleteTargetId)}
+                title="Delete Menu Item"
+                message="Are you sure you want to delete this menu item? This action cannot be undone."
+                confirmText="Delete"
+                cancelText="Cancel"
+                isDanger={true}
+                onConfirm={executeDelete}
+                onClose={() => setDeleteTargetId(null)}
+            />
         </div>
     );
 }
