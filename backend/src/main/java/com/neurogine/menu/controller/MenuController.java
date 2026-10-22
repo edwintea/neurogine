@@ -1,7 +1,7 @@
-package com.neurogine.backend.controller;
+package com.neurogine.menu.controller;
 
-import com.neurogine.backend.model.MenuItem;
-import com.neurogine.backend.repository.MenuItemRepository;
+import com.neurogine.menu.model.MenuItem;
+import com.neurogine.menu.repository.MenuItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

@@ -1,7 +1,7 @@
-package com.neurogine.backend.controller;
+package com.neurogine.menu.controller;
 
-import com.neurogine.backend.model.User;
-import com.neurogine.backend.repository.UserRepository;
+import com.neurogine.menu.model.User;
+import com.neurogine.menu.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

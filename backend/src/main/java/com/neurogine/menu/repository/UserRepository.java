@@ -1,6 +1,6 @@
-package com.neurogine.backend.repository;
+package com.neurogine.menu.repository;
 
-import com.neurogine.backend.model.User;
+import com.neurogine.menu.model.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface UserRepository extends MongoRepository<User, String> {

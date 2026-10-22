@@ -1,6 +1,6 @@
-package com.neurogine.backend.repository;
+package com.neurogine.menu.repository;
 
-import com.neurogine.backend.model.MenuItem;
+import com.neurogine.menu.model.MenuItem;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface MenuItemRepository extends MongoRepository<MenuItem, String> {
