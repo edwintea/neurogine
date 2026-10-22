@@ -1,26 +1,37 @@
-import React, { useState } from "react";
-import { createMenu } from "../api/menuApi";
+import React, { useState, useEffect } from "react";
+import { createMenu, updateMenu } from "../api/menuApi";
+import type { Menu } from "../types/menu";
 
 interface Props {
+    editingMenu?: Menu | null;
     onSuccess: () => void;
+    onClose: () => void;
 }
 
-// Updated hardcoded categories
-const CATEGORIES = [
-    "Food",
-    "Drink",
-    "Buffet",
-    "Dessert",
-    "Snack",
-];
+const CATEGORIES = ["Food", "Drink", "Buffet", "Dessert", "Snack"];
 
-export default function MenuForm({ onSuccess }: Props) {
+export default function MenuForm({ editingMenu, onSuccess, onClose }: Props) {
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [price, setPrice] = useState("");
     const [category, setCategory] = useState("");
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
+
+    // Pre-fill form fields when editingMenu changes
+    useEffect(() => {
+        if (editingMenu) {
+            setName(editingMenu.name || "");
+            setDescription(editingMenu.description || "");
+            setPrice(editingMenu.price ? editingMenu.price.toString() : "");
+            setCategory(editingMenu.category || "");
+        } else {
+            setName("");
+            setDescription("");
+            setPrice("");
+            setCategory("");
+        }
+    }, [editingMenu]);
 
     const submit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -30,31 +41,44 @@ export default function MenuForm({ onSuccess }: Props) {
             setSubmitting(true);
             setError(null);
 
-            await createMenu({
+            const payload = {
                 name,
                 description,
                 price: Number(price),
                 category,
-            });
+            };
 
-            // Reset form on success
-            setName("");
-            setDescription("");
-            setPrice("");
-            setCategory("");
+            if (editingMenu && editingMenu.id) {
+                await updateMenu(editingMenu.id, payload as Menu);
+            } else {
+                await createMenu(payload as Menu);
+            }
 
             onSuccess();
+            onClose();
         } catch (err) {
-            console.error("Failed to create menu item:", err);
-            setError("Failed to create menu item. Please try again.");
+            console.error("Failed to save menu item:", err);
+            setError("Failed to save menu item. Please try again.");
         } finally {
             setSubmitting(false);
         }
     };
 
     return (
-        <div className="card-container">
-            <h2 className="section-title">Create Menu</h2>
+        <div className="card-container" style={{ marginBottom: "24px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+                <h2 className="section-title" style={{ margin: 0 }}>
+                    {editingMenu ? "Edit Menu Item" : "Create New Menu"}
+                </h2>
+                <button
+                    type="button"
+                    onClick={onClose}
+                    className="btn-danger-sm"
+                    style={{ backgroundColor: "#f3f4f6", color: "#374151", border: "1px solid #d1d5db" }}
+                >
+                    Cancel
+                </button>
+            </div>
 
             {error && <p style={{ color: "#dc2626", fontSize: "14px", marginBottom: "12px" }}>{error}</p>}
 
@@ -117,14 +141,15 @@ export default function MenuForm({ onSuccess }: Props) {
                             fontSize: "14px",
                             fontFamily: "inherit",
                             outline: "none",
-                            resize: "vertical"
+                            resize: "vertical",
+                            backgroundColor: "#fff"
                         }}
                     />
                 </div>
 
                 <div style={{ gridColumn: "1 / -1", display: "flex", justifyContent: "flex-end", marginTop: "8px" }}>
                     <button type="submit" disabled={submitting} className="btn-primary">
-                        {submitting ? "Saving..." : "Save Menu"}
+                        {submitting ? "Saving..." : editingMenu ? "Update Menu" : "Save Menu"}
                     </button>
                 </div>
             </form>

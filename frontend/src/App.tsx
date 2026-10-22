@@ -14,7 +14,10 @@ export default function App() {
     const [authView, setAuthView] = useState<"login" | "register">("login");
     const [menus, setMenus] = useState<Menu[]>([]);
 
-    // Check if token exists in localStorage on initial load
+    // UI States for Form visibility and editing
+    const [showForm, setShowForm] = useState<boolean>(false);
+    const [editingMenu, setEditingMenu] = useState<Menu | null>(null);
+
     useEffect(() => {
         const token = localStorage.getItem("authToken");
         if (token) {
@@ -37,7 +40,21 @@ export default function App() {
         setIsAuthenticated(false);
     };
 
-    // If not authenticated, render Login or Register
+    const handleOpenCreateForm = () => {
+        setEditingMenu(null);
+        setShowForm(true);
+    };
+
+    const handleOpenEditForm = (menu: Menu) => {
+        setEditingMenu(menu);
+        setShowForm(true);
+    };
+
+    const handleCloseForm = () => {
+        setShowForm(false);
+        setEditingMenu(null);
+    };
+
     if (!isAuthenticated) {
         return (
             <div id="center">
@@ -59,7 +76,6 @@ export default function App() {
         );
     }
 
-    // If authenticated, render the Menu Management Dashboard
     return (
         <div id="center">
             <header style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
@@ -69,14 +85,31 @@ export default function App() {
                 </button>
             </header>
 
-            <div className="counter">
-                Total Items: {menus.length}
+            <div style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", maxWidth: "800px" }}>
+                <div className="counter" style={{ margin: 0 }}>
+                    Total Items: {menus.length}
+                </div>
+                {!showForm && (
+                    <button onClick={handleOpenCreateForm} className="btn-primary">
+                        + Create New Menu
+                    </button>
+                )}
             </div>
 
             <main style={{ width: "100%", maxWidth: "800px" }}>
-                <MenuForm onSuccess={loadMenus} />
-                <div id="spacer" />
-                <MenuTable menus={menus} refresh={loadMenus} />
+                {showForm && (
+                    <MenuForm
+                        editingMenu={editingMenu}
+                        onSuccess={loadMenus}
+                        onClose={handleCloseForm}
+                    />
+                )}
+
+                <MenuTable
+                    menus={menus}
+                    refresh={loadMenus}
+                    onEdit={handleOpenEditForm}
+                />
             </main>
         </div>
     );
